@@ -23,11 +23,11 @@ func Register(c *gin.Context)  {
 
 	user := model.User{Mobile:mobile, Password:password}
 
-	ra, err := user.AddUser()
+	id, err := user.AddUser()
 	if err != nil {
 		log.Fatal(err)
 	}
-	msg := fmt.Sprintf("welcome to mobile %d password %d Id %d", mobile, password, ra)
+	msg := fmt.Sprintf("welcome to mobile %d password %d Id %d", mobile, password, id)
 
 	c.JSON(http.StatusOK,gin.H{
 		"msg" : msg,
