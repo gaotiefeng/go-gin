@@ -17,5 +17,4 @@ COPY . $GOPATH/src/go-gin
 
 EXPOSE  8080
 
-CMD go run app/main.go
-
+ENTRYPOINT go run app/main.go
