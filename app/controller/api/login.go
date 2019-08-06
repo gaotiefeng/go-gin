@@ -3,6 +3,8 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"go-gin/app/model"
+	"log"
 	"net/http"
 )
 
@@ -19,7 +21,13 @@ func Register(c *gin.Context)  {
 	mobile := c.Request.FormValue("mobile")
 	password := c.Request.FormValue("password")
 
-	msg := fmt.Sprintf("welcome to mobile %d password %d", mobile, password)
+	user := model.User{Mobile:mobile, Password:password}
+
+	ra, err := user.AddUser()
+	if err != nil {
+		log.Fatal(err)
+	}
+	msg := fmt.Sprintf("welcome to mobile %d password %d Id %d", mobile, password, ra)
 
 	c.JSON(http.StatusOK,gin.H{
 		"msg" : msg,
