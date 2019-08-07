@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go-gin/app/model"
+	"go-gin/app/service"
 	"log"
 	"net/http"
 )
@@ -38,5 +39,18 @@ func UserInfo(c *gin.Context) {
 
 	id := c.Param("id")
 
-	c.String(http.StatusOK,"Your message !!! Your id is %d", id)
+	fmt.Println("id = d%", id)
+
+	if 	id== "" || id == "0" {
+		c.String(http.StatusOK,"Your %d id empty", id)
+	}
+	user, err := new(service.UserService).UserInfo(id)
+
+	if err != nil {
+		c.String(http.StatusOK, "Your error %d", err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"msg" : user,
+	})
 }
