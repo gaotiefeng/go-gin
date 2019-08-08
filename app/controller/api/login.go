@@ -53,7 +53,7 @@ func (u *User) UserInfo(c *gin.Context) {
 	user, err := new(service.UserService).UserInfo(id)
 
 	if err != nil {
-		u.Error(c, "err", errorCode.USER_NOT_EXISTE)
+		u.Error(c, "用户不存在", errorCode.USER_NOT_EXISTE)
 		return
 	}
 
