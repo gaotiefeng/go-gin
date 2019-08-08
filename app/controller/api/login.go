@@ -3,11 +3,17 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"go-gin/app/controller"
 	"go-gin/app/model"
 	"go-gin/app/service"
+	errorCode "go-gin/config"
 	"log"
 	"net/http"
 )
+
+type User struct {
+	controller.Base
+}
 
 func Login(c *gin.Context)  {
 
@@ -36,22 +42,20 @@ func Register(c *gin.Context)  {
 	})
 }
 
-func UserInfo(c *gin.Context) {
+func (u *User) UserInfo(c *gin.Context) {
 
 	id := c.Param("id")
 
-	fmt.Println("id = d%", id)
-
 	if 	id== "" || id == "0" {
-		c.String(http.StatusOK,"Your %d id empty", id)
+		u.Error(c, "参数错误", errorCode.PARAMETER_ERROR)
+		return
 	}
 	user, err := new(service.UserService).UserInfo(id)
 
 	if err != nil {
-		c.String(http.StatusOK, "Your error %d", err)
+		u.Error(c, "err", errorCode.USER_NOT_EXISTE)
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"msg" : user,
-	})
+	u.Success(c, errorCode.SUCCESS, user)
 }

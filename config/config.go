@@ -29,6 +29,7 @@ func init() {
 
 	var err error
 	b, err := ioutil.ReadFile(CONFIG_PATH)
+
 	if err != nil {
 		panic(err)
 	}
