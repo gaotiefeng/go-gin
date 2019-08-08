@@ -1,0 +1,8 @@
+mysql:
+  host: "192.168.41.99"
+  port: "3306"
+  database: "gin"
+  username: "root"
+  password: "tf2019"
+produce:
+  port: "8080"

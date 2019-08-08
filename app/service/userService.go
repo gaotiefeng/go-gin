@@ -3,16 +3,26 @@ package service
 import (
 	"errors"
 	"go-gin/app/model"
-	db "go-gin/database"
+	"go-gin/database"
 )
 
 type UserService struct {
 
 }
 
-func (u *UserService) UserInfo (id interface{}) (user model.User,err error)  {
+func (u *UserService) UserAdd (user model.User) (model.User, error){
+	db := database.NewDb()
+	db.Create(&user)
 
-	db.SqlDB.Query("SELECT * FROM user WHERE id = ?", id)
+	if db.NewRecord(user) == true	{
+		return user, errors.New("创建用户失败")
+	}
+
+	return user,nil
+}
+
+func (u *UserService) UserInfo (id interface{}) (user model.User,err error)  {
+	database.NewDb().Where("id = ?", id).First(&user)
 
 	if user.Id == 0 {
 		err = errors.New("未查到用户")
