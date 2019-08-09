@@ -1,13 +1,13 @@
 package api
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go-gin/app/controller"
+	"go-gin/app/form"
+	"go-gin/app/formatter"
 	"go-gin/app/model"
 	"go-gin/app/service"
 	errorCode "go-gin/config"
-	"log"
 	"net/http"
 )
 
@@ -23,23 +23,28 @@ func Login(c *gin.Context)  {
 	c.String(http.StatusOK, "request success mobile %d password %d", mobile, password)
 }
 
-func Register(c *gin.Context)  {
-
-	mobile := c.Request.FormValue("mobile")
-	password := c.Request.FormValue("password")
-
-	user := model.User{Mobile:mobile, Password:password}
-
-	_, err := new(service.UserService).UserAdd(user)
-
+func (u *User) Register(c *gin.Context)  {
+	var (UserAddForm form.UserAddForm)
+	err := c.BindJSON(&UserAddForm)
 	if err != nil {
-		log.Fatal(err)
+		u.Error(c,"json解析失败",500)
+		return
 	}
-	msg := fmt.Sprintf("welcome to mobile %d password %d ", mobile, password)
 
-	c.JSON(http.StatusOK,gin.H{
-		"msg" : msg,
-	})
+	err = u.Validator(c,UserAddForm)
+	if err != nil {
+		u.Error(c,"参数错误",600)
+		return
+	}
+
+	user := model.User{Mobile:UserAddForm.Mobile, Password:UserAddForm.Password}
+	_, err = new(service.UserService).UserAdd(user)
+	if err != nil {
+		u.Error(c,err.Error(),500)
+		return
+	}
+
+	u.Success(c,"ok")
 }
 
 func (u *User) UserInfo(c *gin.Context) {
@@ -56,6 +61,7 @@ func (u *User) UserInfo(c *gin.Context) {
 		u.Error(c, "用户不存在", errorCode.USER_NOT_EXISTE)
 		return
 	}
+	data := formatter.UserBase(user)
 
-	u.Success(c, errorCode.SUCCESS, user)
+	u.Success(c, errorCode.SUCCESS, data)
 }

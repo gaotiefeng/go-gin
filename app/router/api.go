@@ -15,7 +15,7 @@ func SetupRouter() *gin.Engine {
 	router.GET("/", controller.Index)
 	router.GET("/welcome", controller.Welcome)
 	router.POST("/api/login", api.Login)
-	router.POST("/api/register", api.Register)
+	router.POST("/api/register", new(api.User).Register)
 	router.GET("/api/userInfo/:id", new(api.User).UserInfo)
 	return router
 }
