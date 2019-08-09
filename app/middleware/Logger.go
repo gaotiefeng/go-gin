@@ -12,7 +12,7 @@ func Logger() gin.HandlerFunc  {
 			host := context.Request.Host
 			url  := context.Request.URL
 			method := context.Request.Method
-			fmt.Printf("%s \t IP \t %s \t %s \t %s \t", time.Now().Format("2006-01-02 15:04:05"), host, url, method)
+			fmt.Printf("%s \t IP \t %s \t %s \t %s \t\t", time.Now().Format("2006-01-02 15:04:05"), host, url, method)
 			context.Next()
 			fmt.Println(context.Writer.Status())
 	}
