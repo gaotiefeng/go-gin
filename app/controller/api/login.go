@@ -8,19 +8,39 @@ import (
 	"go-gin/app/model"
 	"go-gin/app/service"
 	errorCode "go-gin/config"
-	"net/http"
+	"go-gin/utils"
+	"time"
 )
 
 type User struct {
 	controller.Base
 }
 
-func Login(c *gin.Context)  {
+func (u *User) Login(c *gin.Context)  {
 
 	mobile := c.Request.FormValue("mobile")
 	password := c.Request.FormValue("password")
 
-	c.String(http.StatusOK, "request success mobile %d password %d", mobile, password)
+	user,err := new(service.UserService).UserLogin(mobile,password)
+	if err != nil {
+		u.Error(c,"用户名错误",500)
+		return
+	}
+
+	claims := utils.JWTClaims{
+		UserID:      user.Id,
+		Username:    user.Mobile,
+		Password:    password,
+		FullName:    mobile,
+		Permissions: []string{},
+	}
+	claims.IssuedAt = time.Now().Unix()
+	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(utils.JWT_TOKEN_TIME)).Unix()
+	signedToken,err := utils.GetToken(&claims)
+
+	data := signedToken
+
+	u.Success(c,"ok",data)
 }
 
 func (u *User) Register(c *gin.Context)  {

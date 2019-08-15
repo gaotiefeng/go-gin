@@ -30,3 +30,13 @@ func (u *UserService) UserInfo (id interface{}) (user model.User,err error)  {
 
 	return user, err
 }
+
+func (u *UserService) UserLogin (mobile interface{},password interface{}) (user model.User,err error) {
+	database.NewDb().Where("mobile = ? and password = ?",mobile,password).Find(&user)
+
+	if user.Mobile == "" {
+		err = errors.New("未查到用户")
+	}
+
+	return user, err
+}
