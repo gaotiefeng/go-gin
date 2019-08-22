@@ -6,6 +6,6 @@ func UserBase (user model.User) map[string]interface{}{
 	return map[string]interface{}{
 		"id" :	user.Id,
 		"mobile" : user.Mobile,
-		"passwrod" : user.Password,
+		"password" : user.Password,
 	}
 }
